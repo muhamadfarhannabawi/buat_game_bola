@@ -79,11 +79,11 @@ class FruitCatcherGame extends FlameGame
 
   void incrementScore() {
     score++;
-    AudioManager().playSfx('assets_audio_sfx_collect.mp3');
+    AudioManager().playSfx('collect.mp3');
   }
 
   void gameOver() {
-    AudioManager().playSfx('assets_audio_sfx_explode.mp3');
+    AudioManager().playSfx('explosion.mp3');
     pauseEngine();
   }
 
