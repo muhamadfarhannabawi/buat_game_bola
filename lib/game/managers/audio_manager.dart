@@ -1,6 +1,7 @@
 import 'package:flame_audio/flame_audio.dart';
 
 class AudioManager {
+  // Singleton pattern
   static final AudioManager _instance = AudioManager._internal();
   factory AudioManager() => _instance;
   AudioManager._internal();
@@ -10,82 +11,80 @@ class AudioManager {
   double _musicVolume = 0.7;
   double _sfxVolume = 1.0;
 
+  // Getters
   bool get isMusicEnabled => _isMusicEnabled;
   bool get isSfxEnabled => _isSfxEnabled;
   double get musicVolume => _musicVolume;
   double get sfxVolume => _sfxVolume;
 
+  /// Initialize audio system preload all audio files
   Future<void> initialize() async {
     try {
+      // Preload all sound effects
       await FlameAudio.audioCache.loadAll([
-        'music/instrumental.mp3',
-        'sfx/assets_audio_sfx_explode.mp3',
-        'sfx/assets_audio_sfx_collect.mp3',
-        'sfx/assets_audio_sfx_toet_kowek.mp3',
+        'music/backround_music.mp3',
+        'sfx/collect.mp3',
+        'sfx/explosion.mp3',
+        'sfx/jump.mp3',
       ]);
-      print('Audio Initialize Successfully');
+      print('Audio initialized successfully');
     } catch (e) {
       print('Error initializing audio: $e');
     }
   }
 
+  /// Play background music
   void playBackgroundMusic() {
     if (_isMusicEnabled) {
       try {
-        FlameAudio.bgm.play('music/instrumental.mp3', volume: _musicVolume);
+        FlameAudio.bgm.play('music/background_music.mp3', volume: _musicVolume);
       } catch (e) {
-        print('Error playing backsound: $e');
+        print('Error playing background music: $e');
       }
     }
   }
 
+  /// Stop background music
+  void stopBackgroundMusic() {
+    try {
+      FlameAudio.bgm.stop();
+    } catch (e) {
+      print('Error stopping background music: $e');
+    }
+  }
+
+  /// Pause background music
   void pauseBackgroundMusic() {
     try {
       FlameAudio.bgm.pause();
     } catch (e) {
-      print('Error when paused backsound: $e');
+      print('Error pausing background music: $e');
     }
   }
 
+  /// Resume background music
   void resumeBackgroundMusic() {
-    try {
-      FlameAudio.bgm.resume();
-    } catch (e) {
-      print('error resuming backsound: $e');
+    if (_isMusicEnabled) {
+      try {
+        FlameAudio.bgm.resume();
+      } catch (e) {
+        print('Error resuming background music: $e');
+      }
     }
   }
 
+  /// Play sound effect
   void playSfx(String fileName) {
     if (_isSfxEnabled) {
       try {
         FlameAudio.play('sfx/$fileName', volume: _sfxVolume);
       } catch (e) {
-        print('error playing sfx: $e');
+        print('Error playing SFX: $e');
       }
     }
   }
 
-  void playSfxWithVolume(String fileName, double volume) {
-    if (_isSfxEnabled) {
-      try {
-        final adjustedVolume =
-            ((volume * _sfxVolume).clamp(0.0, 1.0)) as double;
-        FlameAudio.play('sfx/$fileName', volume: adjustedVolume);
-      } catch (e) {
-        print('Error customing volume sound effect: $e');
-      }
-    }
-  }
-
-  void setMusicVolume(double volume) {
-    _musicVolume = volume.clamp(0.0, 1.0);
-    try {
-      FlameAudio.bgm.audioPlayer?.setVolume(_musicVolume);
-    } catch (e) {
-      print('Error setting volume music: $e');
-    }
-  }
-
+  /// Toggle music on/off
   void toggleMusic() {
     _isMusicEnabled = !_isMusicEnabled;
     if (_isMusicEnabled) {
@@ -95,36 +94,12 @@ class AudioManager {
     }
   }
 
-  // Deprecated alias for backward compatibility (typo in older code)
-  @deprecated
-  void toggleMUsic() => toggleMusic();
-
+  /// Toggle sound effects on/off
   void toggleSfx() {
     _isSfxEnabled = !_isSfxEnabled;
   }
 
-  void enableMusic() {
-    _isMusicEnabled = true;
-    resumeBackgroundMusic();
-  }
-
-  void disableMusic() {
-    if (_isMusicEnabled) {
-      _isMusicEnabled = false;
-      pauseBackgroundMusic();
-    }
-  }
-
-  void enableSfx() {
-    _isSfxEnabled = true;
-  }
-
-  void disableSfx() {
-    if (_isSfxEnabled) {
-      _isSfxEnabled = false;
-    }
-  }
-
+  /// Cleanup and dispose audio resources
   void dispose() {
     try {
       FlameAudio.bgm.dispose();
