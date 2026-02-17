@@ -1,92 +1,45 @@
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:pembuatan_game_bola/game/fruit_catcher_game.dart';
+import 'package:pembuatan_game_bola/game/managers/audio_manager.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await AudioManager().initialize();
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fruit Cather Game',
-      home: const GameScreen
-      ):
+    return MaterialApp(title: 'Flutter Game', home: GameScreen());
   }
 }
 
-class GameScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('Game akan ditampilkan disini'),
-      ),
-    );
-  }
-}
-
-class GameScreen extends StatefulWidget { 
-  const GameScreen({super.key});
-
-@override 
-State <GameScreen> createState() => _GameScreenState();
-}
-
-
-class _GameScreenState extends State<GameScreen> {
-
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Stack(
-      children: [
-        Positioned(
-          top: 50,
-          left: 20,
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.black54,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Text(
-              'Score: 1',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ), // Container
-
-        ), // Positioned
-      ],
-    ),
-  );
-}
-
-}
 class GameScreen extends StatefulWidget {
-  const GameScreen ({super.key});
+  const GameScreen({super.key});
 
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
+  late FruitCatcherGame game;
 
   @override
   void initState() {
     super.initState();
+    game = FruitCatcherGame();
+  }
+
+  @override
+  void dispose() {
+    game.onRemove();
+    super.dispose();
   }
 
   @override
@@ -94,53 +47,54 @@ class _GameScreenState extends State<GameScreen> {
     return Scaffold(
       body: Stack(
         children: [
-
-          // Positioned lain (jika ada)
+          GameWidget(game: game),
           Positioned(
             top: 50,
             left: 20,
             child: Container(
-              padding: const EdgeInsets.all(10),
-              color: Colors.black54,
-              child: const Text(
-                'Score: 1',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ValueListenableBuilder<int>(
+                valueListenable: game.scoreNotifier,
+                builder: (context, score, child) {
+                  return Text(
+                    'Score: $score',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
               ),
             ),
           ),
-
-          // Penambahan icon di kanan atas
           Positioned(
             top: 50,
             right: 20,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: const Icon(
-                    Icons.music_note,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {},
+                  icon: Icon(Icons.music_note),
+                  onPressed: () {
+                    AudioManager().toggleMusic();
+                  },
                 ),
                 IconButton(
-                  icon: const Icon(
-                    Icons.volume_up,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {},
+                  icon: Icon(Icons.volume_up),
+                  onPressed: () {
+                    AudioManager().toggleSfx();
+                  },
                 ),
               ],
-            ), // Row
-          ), // Positioned
-        ], // Children
-      ), // Stack
+            ),
+          ),
+        ],
+      ),
     );
   }
-
 }
-
-

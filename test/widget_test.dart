@@ -11,6 +11,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pembuatan_game_bola/main.dart';
 
 void main() {
+  testWidgets('Fruit Catcher Game Screen displays correctly', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
+
+    // Verify that game screen is loaded
+    expect(find.byType(GameScreen), findsOneWidget);
+    expect(find.text('Score: 0'), findsOneWidget);
+    expect(find.byIcon(Icons.music_note), findsOneWidget);
+    expect(find.byIcon(Icons.volume_up), findsOneWidget);
+  });
+  
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
