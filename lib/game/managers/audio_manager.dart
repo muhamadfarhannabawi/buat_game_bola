@@ -39,7 +39,7 @@ class AudioManager {
       try {
         FlameAudio.bgm.play('music/backround_music.mp3', volume: _musicVolume);
       } catch (e) {
-        print('Error playing backround music: $e');
+        print('Error playing background music: $e');
       }
     }
   }
@@ -49,7 +49,7 @@ class AudioManager {
     try {
       FlameAudio.bgm.stop();
     } catch (e) {
-      print('Error stopping backround music: $e');
+      print('Error stopping background music: $e');
     }
   }
 
@@ -58,7 +58,7 @@ class AudioManager {
     try {
       FlameAudio.bgm.pause();
     } catch (e) {
-      print('Error pausing backround music: $e');
+      print('Error pausing background music: $e');
     }
   }
 
@@ -68,7 +68,7 @@ class AudioManager {
       try {
         FlameAudio.bgm.resume();
       } catch (e) {
-        print('Error resuming backround music: $e');
+        print('Error resuming background music: $e');
       }
     }
   }
