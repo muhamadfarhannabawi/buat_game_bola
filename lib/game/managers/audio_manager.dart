@@ -23,9 +23,9 @@ class AudioManager {
       // Preload all sound effects
       await FlameAudio.audioCache.loadAll([
         'music/backround_music.mp3',
-        'sfx/collect.mp3',
-        'sfx/explosion.mp3',
-        'sfx/jump.mp3',
+        'music/sfx/collect.mp3',
+        'music/sfx/explosion.mp3',
+        'music/sfx/jump.mp3',
       ]);
       print('Audio initialized successfully');
     } catch (e) {
